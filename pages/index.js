@@ -1,65 +1,43 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    Container,
+} from "@material-ui/core";
+import ListPost from "../components/ListPost";
+import PostForm from "../components/PostForm";
+import styles from "../styles/Home.module.css";
 
-export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+export default function Home({ posts }) {
+    return (
+        <>
+            <AppBar position="static">
+                <Toolbar>
+                    <Typography variant="h6" className={styles.title}>
+                        CSRF Demo
+                    </Typography>
+                    <Button color="inherit">Login</Button>
+                </Toolbar>
+            </AppBar>
+            <Container maxWidth="sm" className={styles.mt}>
+                <PostForm />
+                <ListPost posts={posts} />
+            </Container>
+        </>
+    );
+}
+export async function getServerSideProps() {
+    const posts = [
+        {
+            id: 1,
+            userId: 2,
+            content: "Mình muốn xem  free ahihi",
+            name: "Vu",
+        },
+        { id: 2, userId: 2, content: "hihi", name: "Vu" },
+        { id: 3, userId: 2, content: "hihi", name: "Vu" },
+        { id: 4, userId: 2, content: "hihi", name: "Vu" },
+    ];
+    return { props: { posts } };
 }
