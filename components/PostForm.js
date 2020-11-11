@@ -5,9 +5,9 @@ import styles from "../styles/Home.module.css";
 export default function PostForm({ getAllPost }) {
     const submidHandler = (e) => {
         e.preventDefault();
-        Axios.get(
-            `http://localhost:3000/api/post?content=${e.target.content.value}`
-        ).then(getAllPost);
+        Axios.get(`/api/post?content=${e.target.content.value}`).then(
+            getAllPost
+        );
         // getAllPost();
         e.target.reset();
     };

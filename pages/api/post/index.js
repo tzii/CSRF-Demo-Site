@@ -4,6 +4,7 @@ const { getUser } = require("../../../utils/user");
 
 export default async function (req, res) {
     if (req.method !== "GET") return res.json({ message: "Error" });
+    console.log(req.query.content);
     if (!req.cookies.id)
         return res.json({ message: "You don't have permission 1" });
     await getUser(req.cookies.id)
@@ -17,9 +18,11 @@ export default async function (req, res) {
                         `INSERT INTO POST(userId, content) VALUES (${user.id},"${req.query.content}")`
                     )
                 )
-                .then(() => res.json({ message: "post successfully" }))
+                .then(() => {
+                    res.end();
+                })
                 .catch((err) => {
-                    res.json({ message: "err" });
+                    res.json({ message: "err 1", err });
                 });
         })
         .catch((err) => {
