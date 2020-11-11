@@ -12,7 +12,7 @@ export default function LoginPage() {
         params.append("username", e.target.username.value);
         params.append("password", e.target.password.value);
         console.log(params);
-        Axios.post("http://localhost:3000/api/login", params).then((res) => {
+        Axios.post("/api/login", params).then((res) => {
             if (res.data.message == "Loggin successfully") router.push("/");
         });
     };

@@ -22,9 +22,7 @@ export default function Home() {
     const router = useRouter();
 
     useEffect(() => {
-        Axios.get("http://localhost:3000/api/user/info").then((res) =>
-            setUser(res.data)
-        );
+        Axios.get("/api/user/info").then((res) => setUser(res.data));
     }, []);
 
     useEffect(() => {
@@ -41,19 +39,17 @@ export default function Home() {
     };
 
     const clearHandler = () => {
-        Axios.get("http://localhost:3000/api/post/clear").then(getAllPost);
+        Axios.get("/api/post/clear").then(getAllPost);
     };
 
     const logout = () => {
-        Axios.get("http://localhost:3000/api/logout").then((res) =>
-            console.log(res.data)
-        );
+        Axios.get("/api/logout").then((res) => console.log(res.data));
         setUser({ message: "You have not logged in" });
         setLogged(false);
     };
 
     const getAllPost = () => {
-        Axios.get("http://localhost:3000/api/post/all").then((res) => {
+        Axios.get("/api/post/all").then((res) => {
             setPosts(res.data);
             console.log("get all");
         });
