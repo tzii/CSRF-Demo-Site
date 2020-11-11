@@ -4,12 +4,60 @@ import {
     Typography,
     Button,
     Container,
+    Tooltip,
+    Fab,
 } from "@material-ui/core";
 import ListPost from "../components/ListPost";
 import PostForm from "../components/PostForm";
 import styles from "../styles/Home.module.css";
+import { useEffect, useState } from "react";
+import Axios from "axios";
+import { useRouter } from "next/router";
+import { Delete } from "@material-ui/icons";
 
-export default function Home({ posts }) {
+export default function Home() {
+    const [user, setUser] = useState({ message: "You have not logged in" });
+    const [logged, setLogged] = useState(false);
+    const [posts, setPosts] = useState([]);
+    const router = useRouter();
+
+    useEffect(() => {
+        Axios.get("http://localhost:3000/api/user/info").then((res) =>
+            setUser(res.data)
+        );
+    }, []);
+
+    useEffect(() => {
+        if (user.message) setLogged(false);
+        else {
+            setLogged(true);
+            getAllPost();
+        }
+    }, [user]);
+
+    const clickHandler = () => {
+        if (!logged) router.push("/login");
+        else logout();
+    };
+
+    const clearHandler = () => {
+        Axios.get("http://localhost:3000/api/post/clear").then(getAllPost);
+    };
+
+    const logout = () => {
+        Axios.get("http://localhost:3000/api/logout").then((res) =>
+            console.log(res.data)
+        );
+        setUser({ message: "You have not logged in" });
+        setLogged(false);
+    };
+
+    const getAllPost = () => {
+        Axios.get("http://localhost:3000/api/post/all").then((res) => {
+            setPosts(res.data);
+            console.log("get all");
+        });
+    };
     return (
         <>
             <AppBar position="static">
@@ -17,27 +65,27 @@ export default function Home({ posts }) {
                     <Typography variant="h6" className={styles.title}>
                         CSRF Demo
                     </Typography>
-                    <Button color="inherit">Login</Button>
+                    {logged ? (
+                        <Typography variant="subtitle1">{user.name}</Typography>
+                    ) : null}
+                    <Button color="inherit" onClick={clickHandler}>
+                        {logged ? "Logout" : "Login"}
+                    </Button>
                 </Toolbar>
             </AppBar>
             <Container maxWidth="sm" className={styles.mt}>
-                <PostForm />
+                {logged ? <PostForm getAllPost={getAllPost} /> : null}
                 <ListPost posts={posts} />
             </Container>
+            <Tooltip title="Clear">
+                <Fab
+                    color="secondary"
+                    className={styles.absolute}
+                    onClick={clearHandler}
+                >
+                    <Delete />
+                </Fab>
+            </Tooltip>
         </>
     );
-}
-export async function getServerSideProps() {
-    const posts = [
-        {
-            id: 1,
-            userId: 2,
-            content: "Mình muốn xem  free ahihi",
-            name: "Vu",
-        },
-        { id: 2, userId: 2, content: "hihi", name: "Vu" },
-        { id: 3, userId: 2, content: "hihi", name: "Vu" },
-        { id: 4, userId: 2, content: "hihi", name: "Vu" },
-    ];
-    return { props: { posts } };
 }

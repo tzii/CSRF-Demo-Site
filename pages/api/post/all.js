@@ -2,26 +2,16 @@ const sqlite = require("sqlite");
 const sqlite3 = require("sqlite3");
 const { getUser } = require("../../../utils/user");
 
-export default function (req, res) {
+export default async function (req, res) {
     if (req.method !== "GET") return res.json({ message: "Error" });
-    if (!req.cookies.id)
-        return res.json({ message: "You don't have permission 1" });
-    getUser(req.cookies.id)
-        .then((user) => {
-            if (!user)
-                return res.json({ message: "You don't have permission" });
-            sqlite
-                .open({ filename: "user.db", driver: sqlite3.Database })
-                .then((db) => db.all(`SELECT * FROM POST`))
-                .then((posts) => {
-                    if (!posts) return res.json([]);
-                    res.json(posts);
-                })
-                .catch((err) => {
-                    res.json({ message: "err" });
-                });
+    await sqlite
+        .open({ filename: "user.db", driver: sqlite3.Database })
+        .then((db) => db.all(`SELECT * FROM POST`))
+        .then((posts) => {
+            if (!posts) return res.json([]);
+            res.json(posts);
         })
         .catch((err) => {
-            res.jsos({ message: err });
+            res.json({ message: "err" });
         });
 }
