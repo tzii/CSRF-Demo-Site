@@ -5,7 +5,7 @@ const cookie = require("cookie");
 export default async function (req, res) {
     if (req.method !== "POST") return res.json({ message: "Error" });
     await sqlite
-        .open({ filename: "user.db", driver: sqlite3.Database })
+        .open({ filename: "./db/user.db", driver: sqlite3.Database })
         .then((db) =>
             db.get(
                 `SELECT * FROM USER WHERE username="${req.body.username}" and password="${req.body.password}"`

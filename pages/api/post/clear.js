@@ -11,7 +11,7 @@ export default async function (req, res) {
             if (!user)
                 return res.json({ message: "You don't have permission" });
             await sqlite
-                .open({ filename: "user.db", driver: sqlite3.Database })
+                .open({ filename: "./db/user.db", driver: sqlite3.Database })
                 .then((db) => db.run(`DELETE FROM POST`))
                 .then(() => res.json({ message: "Clear Successfully" }))
                 .catch((err) => {
