@@ -1,7 +1,7 @@
 const cookie = require("cookie");
 
 const path = require("path");
-const dbPath = path.resolve(__dirname, "./db/user.db");
+const dbPath = path.join(process.cwd(), "db/user.db");
 
 export default function (req, res) {
     res.setHeader(

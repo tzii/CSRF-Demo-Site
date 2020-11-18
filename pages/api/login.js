@@ -3,7 +3,7 @@ const sqlite3 = require("sqlite3");
 const cookie = require("cookie");
 
 const path = require("path");
-const dbPath = path.resolve(__dirname, "./db/user.db");
+const dbPath = path.join(process.cwd(), "db/user.db");
 
 export default async function (req, res) {
     if (req.method !== "POST") return res.json({ message: "Error" });
