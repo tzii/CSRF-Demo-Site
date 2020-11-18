@@ -2,6 +2,9 @@ const sqlite = require("sqlite");
 const sqlite3 = require("sqlite3");
 const { getUser } = require("../../../utils/user");
 
+const path = require("path");
+const dbPath = path.resolve(__dirname, "./db/user.db");
+
 export default async function (req, res) {
     if (req.method !== "GET") return res.json({ message: "Error" });
     console.log(req.query.content);
@@ -12,7 +15,7 @@ export default async function (req, res) {
             if (!user)
                 return res.json({ message: "You don't have permission" });
             await sqlite
-                .open({ filename: "./db/user.db", driver: sqlite3.Database })
+                .open({ filename: dbPath, driver: sqlite3.Database })
                 .then((db) =>
                     db.run(
                         `INSERT INTO POST(userId, content) VALUES (${user.id},"${req.query.content}")`
