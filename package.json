@@ -6,7 +6,7 @@
         "initdb": "node initdb.js",
         "dev": "next dev",
         "build": "next build",
-        "start": "next start"
+        "start": "next start -p $PORT"
     },
     "dependencies": {
         "@material-ui/core": "^4.11.0",
