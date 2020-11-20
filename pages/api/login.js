@@ -17,7 +17,7 @@ export default async function (req, res) {
         .then((data) => {
             if (!data) return res.json({ message: "Login failed" });
             res.setHeader("Set-Cookie", cookie.serialize("id", data.id), {
-                SameSite: "strict",
+                sameSite: "strict",
             });
             res.json({ message: "Loggin successfully" });
         });
