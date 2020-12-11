@@ -2,9 +2,12 @@ import { Button, Container, Grid, TextField } from "@material-ui/core";
 import Axios from "axios";
 import { useRouter } from "next/router";
 import styles from "../styles/Home.module.css";
+import LoadingBar from "react-top-loading-bar";
+import { useRef } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
+  const loading = useRef();
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -12,13 +15,18 @@ export default function LoginPage() {
     params.append("username", e.target.username.value);
     params.append("password", e.target.password.value);
     console.log(params);
+    loading.current.staticStart();
     Axios.post("/api/login", params).then((res) => {
-      if (res.data.status === "ok") router.push("/");
+      if (res.data.status === "ok") {
+        loading.current.complete();
+        router.push("/");
+      }
     });
   };
 
   return (
     <Container maxWidth="sm">
+      <LoadingBar color="#f50057" ref={loading} />
       <Grid
         container
         spacing={2}
