@@ -9,7 +9,7 @@ export default function ListPost({ posts }) {
         Posts
       </Typography>
       {posts.map((post, i) => (
-        <Post post={post} key={post.id} />
+        <Post post={post} key={post._id} />
       ))}
     </div>
   );
