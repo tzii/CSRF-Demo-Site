@@ -1,20 +1,20 @@
-const sqlite = require("sqlite");
-const sqlite3 = require("sqlite3");
-const cookie = require("cookie");
+import { RedoTwoTone } from "@material-ui/icons";
+import withMiddleware from "../../middlewares/withMiddleware";
 
-const path = require("path");
-const dbPath = path.join(process.cwd(), "db/user.db");
+const handler = function (req, res) {
+  if (req.method === "POST") {
+    if (req.session.user) return res.json({ status: "err", msg: "already logged" });
+    req.db
+      .collection("users")
+      .findOne(req.body)
+      .then((user) => {
+        if (!user) {
+          return res.send({ status: "err", msg: "Wrong username or password" });
+        }
+        req.session.user = { id: user._id, name: user.name };
+        res.json({ status: "ok", msg: "ok" });
+      });
+  } else res.json({ status: "err", msg: `Can't ${req.method}` });
+};
 
-export default async function (req, res) {
-  if (req.method !== "POST") return res.json({ message: "Error" });
-  await sqlite
-    .open({ filename: dbPath, driver: sqlite3.Database })
-    .then((db) =>
-      db.get(`SELECT * FROM USER WHERE username="${req.body.username}" and password="${req.body.password}"`)
-    )
-    .then((data) => {
-      if (!data) return res.json({ message: "Login failed" });
-      res.setHeader("Set-Cookie", cookie.serialize("id", data.id, { sameSite: "strict" }));
-      res.json({ message: "Loggin successfully" });
-    });
-}
+export default withMiddleware(handler);

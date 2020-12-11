@@ -1,27 +1,15 @@
-const sqlite = require("sqlite");
-const sqlite3 = require("sqlite3");
-const { getUser } = require("../../../utils/user");
+import withAuthentication from "../../../middlewares/withAuthentication";
 
-const path = require("path");
-const dbPath = path.join(process.cwd(), "db/user.db");
+const handler = function (req, res) {
+  if (req.method === "GET") {
+    req.db
+      .collection("posts")
+      .drop()
+      .then((d) => {
+        console.log(d);
+        return res.json({ status: "ok", msg: "clear successful" });
+      });
+  } else res.json({ status: "err", msg: `Can't ${req.method}` });
+};
 
-export default async function (req, res) {
-    if (req.method !== "GET") return res.json({ message: "Error" });
-    if (!req.cookies.id)
-        return res.json({ message: "You don't have permission 1" });
-    await getUser(req.cookies.id)
-        .then(async (user) => {
-            if (!user)
-                return res.json({ message: "You don't have permission" });
-            await sqlite
-                .open({ filename: dbPath, driver: sqlite3.Database })
-                .then((db) => db.run(`DELETE FROM POST`))
-                .then(() => res.json({ message: "Clear Successfully" }))
-                .catch((err) => {
-                    res.json({ message: "err" });
-                });
-        })
-        .catch((err) => {
-            res.jsos({ message: err });
-        });
-}
+export default withAuthentication(handler);

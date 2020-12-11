@@ -1,12 +1,10 @@
-const cookie = require("cookie");
+import { RedoTwoTone } from "@material-ui/icons";
+import withAuthentication from "../../middlewares/withAuthentication";
 
-const path = require("path");
-const dbPath = path.join(process.cwd(), "db/user.db");
+const handler = function (req, res) {
+  if (req.method === "GET") {
+    req.session.destroy().then(res.json({ status: "ok", msg: "logout successful" }));
+  } else res.json({ status: "err", msg: `Can't ${req.method}` });
+};
 
-export default function (req, res) {
-    res.setHeader(
-        "Set-Cookie",
-        cookie.serialize("id", "", { expires: new Date(2000, 1, 1) })
-    );
-    res.json({ message: "Logout successfully" });
-}
+export default withAuthentication(handler);
