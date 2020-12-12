@@ -7,28 +7,29 @@ import Axios from "axios";
 import { useRouter } from "next/router";
 import { Delete } from "@material-ui/icons";
 import LoadingBar from "react-top-loading-bar";
+import { mongodb_uri } from "../config";
+import { applySession, expressSession } from "next-session";
+import connectMongo from "connect-mongo";
 
-export default function Home() {
-  const [user, setUser] = useState({ msg: "not logged in", status: "err" });
+const MongoStore = connectMongo(expressSession);
+
+export default function Home({ user }) {
   const [logged, setLogged] = useState(false);
   const [posts, setPosts] = useState([]);
   const router = useRouter();
   const loading = useRef();
 
   useEffect(() => {
-    Axios.get("/api/user/info").then((res) => setUser(res.data));
-  }, []);
-
-  useEffect(() => {
-    if (user.status === "err") setLogged(false);
+    if (!user) setLogged(false);
     else {
       setLogged(true);
       loading.current.staticStart();
       getAllPost();
     }
-  }, [user]);
+  }, []);
 
   const clickHandler = () => {
+    console.log(logged);
     if (!logged) router.push("/login");
     else logout();
   };
@@ -39,10 +40,9 @@ export default function Home() {
   };
 
   const logout = () => {
+    setLogged(false);
     loading.current.staticStart();
     Axios.get("/api/logout").then(() => loading.current.complete());
-    setUser({ msg: "not logged in", status: "err" });
-    setLogged(false);
   };
 
   const getAllPost = () => {
@@ -77,4 +77,12 @@ export default function Home() {
       </Tooltip>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  await applySession(context.req, context.res, {
+    store: new MongoStore({ url: mongodb_uri, dbName: "csrf" }),
+  });
+  console.log(context.req.session.user);
+  return { props: { user: context.req.session.user || false } };
 }

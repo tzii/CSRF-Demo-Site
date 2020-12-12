@@ -12,11 +12,8 @@ export default function LoginPage() {
   const submitHandler = (e) => {
     e.preventDefault();
     let params = new URLSearchParams();
-    params.append("username", e.target.username.value);
-    params.append("password", e.target.password.value);
-    console.log(params);
     loading.current.staticStart();
-    Axios.post("/api/login", params).then((res) => {
+    Axios.post("/api/login", { username: e.target.username.value, password: e.target.password.value }).then((res) => {
       if (res.data.status === "ok") {
         loading.current.complete();
         router.push("/");
