@@ -29,7 +29,6 @@ export default function Home({ user }) {
   }, []);
 
   const clickHandler = () => {
-    console.log(logged);
     if (!logged) router.push("/login");
     else logout();
   };
@@ -83,6 +82,5 @@ export async function getServerSideProps(context) {
   await applySession(context.req, context.res, {
     store: new MongoStore({ url: mongodb_uri, dbName: "csrf" }),
   });
-  console.log(context.req.session.user);
   return { props: { user: context.req.session.user || false } };
 }

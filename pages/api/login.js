@@ -1,4 +1,3 @@
-import { RedoTwoTone } from "@material-ui/icons";
 import withMiddleware from "../../middlewares/withMiddleware";
 
 const handler = function (req, res) {

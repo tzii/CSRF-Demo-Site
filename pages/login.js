@@ -14,10 +14,8 @@ export default function LoginPage() {
     let params = new URLSearchParams();
     loading.current.staticStart();
     Axios.post("/api/login", { username: e.target.username.value, password: e.target.password.value }).then((res) => {
-      if (res.data.status === "ok") {
-        loading.current.complete();
-        router.push("/");
-      }
+      if (res.data.status === "ok") router.push("/");
+      loading.current.complete();
     });
   };
 

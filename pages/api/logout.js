@@ -1,4 +1,3 @@
-import { RedoTwoTone } from "@material-ui/icons";
 import withAuthentication from "../../middlewares/withAuthentication";
 
 const handler = function (req, res) {
