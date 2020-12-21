@@ -10,10 +10,11 @@ import LoadingBar from "react-top-loading-bar";
 import { mongodb_uri } from "../config";
 import { applySession, expressSession } from "next-session";
 import connectMongo from "connect-mongo";
+import Tokens from "csrf";
 
 const MongoStore = connectMongo(expressSession);
 
-export default function Home({ user }) {
+export default function Home({ user, _csrf }) {
   const [logged, setLogged] = useState(false);
   const [posts, setPosts] = useState([]);
   const router = useRouter();
@@ -66,7 +67,7 @@ export default function Home({ user }) {
         </Toolbar>
       </AppBar>
       <Container maxWidth="sm" className={styles.mt}>
-        {logged ? <PostForm getAllPost={getAllPost} loading={loading} /> : null}
+        {logged ? <PostForm getAllPost={getAllPost} loading={loading} _csrf={_csrf} /> : null}
         <ListPost posts={posts} />
       </Container>
       <Tooltip title="Clear">
@@ -82,5 +83,10 @@ export async function getServerSideProps(context) {
   await applySession(context.req, context.res, {
     store: new MongoStore({ url: mongodb_uri, dbName: "csrf" }),
   });
-  return { props: { user: context.req.session.user || false } };
+  return {
+    props: {
+      user: context.req.session.user || false,
+      _csrf: context.req.session.secret ? new Tokens().create(context.req.session.secret) : null,
+    },
+  };
 }
