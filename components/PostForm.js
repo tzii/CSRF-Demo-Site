@@ -6,7 +6,7 @@ export default function PostForm({ getAllPost, loading }) {
   const submidHandler = (e) => {
     e.preventDefault();
     loading.current.staticStart();
-    Axios.get(`/api/post?content=${e.target.content.value}`).then(getAllPost);
+    Axios.post("/api/post", { content: e.target.content.value }).then(getAllPost);
     e.target.reset();
   };
 

@@ -1,11 +1,11 @@
 import withAuthentication from "../../../middlewares/withAuthentication";
 
 const handler = function (req, res) {
-  if (req.method === "GET") {
-    if (!req.query.content) return res.json({ status: "err", msg: "no content" });
+  if (req.method === "POST") {
+    if (!req.body.content) return res.json({ status: "err", msg: "no content" });
     req.db
       .collection("posts")
-      .insertOne({ userId: req.session.user.id, content: req.query.content }, { forceServerObjectId: true })
+      .insertOne({ userId: req.session.user.id, content: req.body.content }, { forceServerObjectId: true })
       .then((result) => {
         if (!result.insertedCount) return res.json({ status: "ok", msg: "posted unsuccessful" });
         return res.json({ status: "ok", msg: "posted successful" });
